@@ -11,96 +11,81 @@ using System.Threading.Tasks;
 
 namespace ReceteX.Repository.Shared.Concrete
 {
-    public class Repository <T> : IRepository<T> where T : BaseModel
+    public class Repository<T> : IRepository<T> where T : BaseModel
     {
         private readonly ApplicationDbContext _db;
-
-        //hangi contexte bağlanması gerektiğini runtime da kendisi karar vermesi gerekiyor.
         internal DbSet<T> dbSet;
 
         public Repository(ApplicationDbContext db)
         {
             _db = db;
-            //dblerin içindeki setlerin içindeki generic olanlara
             dbSet = db.Set<T>();
         }
 
         public void Add(T entity)
         {
+            //    _db.Books.Add(entity);
             dbSet.Add(entity);
         }
 
         public void AddRange(IEnumerable<T> entities)
         {
-
             dbSet.AddRange(entities);
         }
 
-        //sadece silinmemiş olanlarla aktif olanları getir
         public virtual IQueryable<T> GetAll()
         {
-            //burada geriye bir şey döndürmem gerekiyor.
-            return dbSet.Where(x => x.isDeleted == false);
+            return dbSet.Where(t => t.isDeleted == false);
         }
 
         public IQueryable<T> GetAll(Expression<Func<T, bool>> filter)
         {
-            //return dbSet.Where(filter);
-            //önce parametresiz olan getall çalışacak sonra buna düşecek
             return GetAll().Where(filter);
         }
 
-		public T GetById(Guid id)
-		{
-            return (T)dbSet.Find(id);
-
-		}
-
-		public T GetFirstOrDefault(Expression<Func<T, bool>> filter)
+        public T GetById(Guid id)
         {
-            //aslında bu da filtre uyguluyor ama bir tane nesne gönderiyor bize
-            return GetAll().FirstOrDefault(filter);
-
-		}
-
-        //public void Remove(T entity)
-        //{
-        //    entity.isDeleted = true;
-        //    //entity.isActive = false;
-        //    //entity.DateModified = DateTime.Now;
-        //    dbSet.Update(entity);
-        //}
-         
-        public void Remove(Guid id)
-        
-        {
-            //programımızda bir şey silecekken id ile siliyoruz. Reposirtoryde düzenleme yaptık
-            //T entity = GetFirstOrDefault(t=>t.Id== id);
-            T entity = dbSet.Find(id);
-            entity.isDeleted = true;
-            dbSet.Update(entity);
+            return dbSet.Find(id);
+            // return GetFirstOrDefault(t=>t.Id==id);
         }
 
-	public void RemoveRange(IEnumerable<T> entities)
+        public virtual T GetFirstOrDefault(Expression<Func<T, bool>> filter)
+        {
+            return dbSet.Where(t => t.isDeleted==false).AsNoTracking().FirstOrDefault(filter);
+        }
+
+        public void Remove(Guid id)
+        {
+            T entity = GetFirstOrDefault(t => t.Id == id);
+
+            entity.isDeleted = true;
+
+            dbSet.Update(entity);
+
+        }
+
+        public void RemoveRange(IEnumerable<T> entities)
         {
             foreach (T item in entities)
             {
                 item.isDeleted = true;
-                //item.DateModified = DateTime.Now;
 
             }
+
             dbSet.UpdateRange(entities);
+
         }
 
         public void Update(T entity)
         {
-            //entity.DateModified = DateTime.Now;
+
             dbSet.Update(entity);
         }
 
         public void UpdateRange(IEnumerable<T> entities)
         {
-           
+
+
             dbSet.UpdateRange(entities);
         }
     }

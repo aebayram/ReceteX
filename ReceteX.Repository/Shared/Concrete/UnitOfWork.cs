@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ReceteX.Repository.Shared.Concrete
 {
-    public class UnitOfWork : IUnitOfWork // Class ile UnitOfWork açtık 
+    public class UnitOfWork : IUnitOfWork
     {
         public IRepository<AppUser> Users { get; private set; }
 
@@ -35,9 +35,8 @@ namespace ReceteX.Repository.Shared.Concrete
 
         public IRepository<Status> Statuses { get; private set; }
 
-       
-
         private readonly ApplicationDbContext _db;
+
         public UnitOfWork(ApplicationDbContext db)
         {
             _db = db;
@@ -57,7 +56,6 @@ namespace ReceteX.Repository.Shared.Concrete
         public void Save()
         {
             _db.SaveChanges();
-
         }
     }
 }

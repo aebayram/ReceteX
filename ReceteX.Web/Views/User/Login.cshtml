@@ -1,4 +1,4 @@
-﻿﻿@using ReceteX.Models;
+﻿@using ReceteX.Models;
 @model AppUser
 @{
     Layout = "";
@@ -9,10 +9,10 @@
 <head>
 
     <meta charset="utf-8" />
-    <title>Login | Kullanıcı Girişi</title>
+    <title>ReceteX | Kullanıcı Girişi</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
-    <meta content="AY" name="author" />
+    <meta content="Medula Reçete Yazılımı" name="description" />
+    <meta content="Deadline Bilişim" name="author" />
     <!-- App favicon -->
     <link rel="shortcut icon" href="~/assets/images/favicon.ico">
 
@@ -44,23 +44,23 @@
 
                         <div class="card-body p-4">
                             <div class="text-center mt-2">
-                                <h5 class="text-primary">Hoş Geldiniz !</h5>
+                                <h5 class="text-primary">Hoşgeldiniz !</h5>
                                 <p class="text-muted">Sistemi kullanabilmek için giriş yapınız.</p>
                             </div>
                             <div class="p-2 mt-4">
                                 <form method="post">
 
                                     <div class="mb-3">
-                                        <label class="form-label" for="email">Email</label>
-                                        <input asp-for="Email" type="email" class="form-control" id="email" placeholder="Email Giriniz">
+                                        <label class="form-label" for="username">Email</label>
+                                        <input asp-for="Email" class="form-control" id="email" placeholder="E-mail adresinizi giriniz">
                                     </div>
 
                                     <div class="mb-3">
                                         <div class="float-end">
-                                            <a href="auth-recoverpw.html" class="text-muted">Şifremi Unuttum?</a>
+                                            <a href="auth-recoverpw.html" class="text-muted">Şifremi unuttum</a>
                                         </div>
                                         <label class="form-label" for="userpassword">Password</label>
-                                        <input asp-for="Password" type="password" class="form-control" id="password" placeholder="Şifrenizi Giriniz">
+                                        <input asp-for="Password" type="password" class="form-control" id="password" placeholder="Şifrenizi giriniz">
                                     </div>
 
                                     <div class="form-check">
@@ -72,6 +72,11 @@
                                         <button class="btn btn-primary w-sm waves-effect waves-light" type="submit">Giriş Yap</button>
                                     </div>
 
+
+
+
+
+
                                 </form>
                             </div>
 
@@ -79,7 +84,7 @@
                     </div>
 
                     <div class="mt-5 text-center">
-                        <p>© <script>document.write(new Date().getFullYear())</script> Minible. Crafted with <i class="mdi mdi-heart text-danger"></i> by ELSA</p>
+                        <p>© <script>document.write(new Date().getFullYear())</script> Minible. Crafted with <i class="mdi mdi-heart text-danger"></i> by Ebru</p>
                     </div>
 
                 </div>

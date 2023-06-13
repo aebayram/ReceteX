@@ -1,4 +1,4 @@
-﻿<div>
+﻿﻿<div>
 	<div class="card">
 		<div class="card-header  text-white bg-success bg-gradient">
 			<span class="fs-4">Müşteri Listesi</span>
@@ -6,7 +6,6 @@
 		</div>
 		<div class="card-body">
 			<table id="tblCustomers" class="table table-bordered table-striped" style="width:100%">
-				
 			</table>
 		</div>
 	</div>
@@ -29,7 +28,7 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
-				<a href="#" id="btnSave" class="btn btn-primary">Ekle</a>
+				<a href="#" id="btnSave" class="btn btn-primary">Kaydet</a>
 			</div>
 		</div>
 	</div>
@@ -45,9 +44,7 @@
 			$("#btnEkle").click(function () {
 				$('#modal').modal("show");
 				$('#txtName').val("");
-				//bu şekilde one click dersek kendi off'unu kendi yapıyor
-				$('#btnSave').one('click',function () 
-				{
+				$('#btnSave').off().click(function () {
 					addCustomer();
 				});
 			})
@@ -91,8 +88,32 @@
 			});
 		}
 
-		// ------------------------------------ Müşteri  Silem Fonksiyonu BİTİŞ
+		// ------------------------------------ Müşteri  Silme Fonksiyonu BİTİŞ
 
+
+		function updateCustomer(customerId, customerName) {
+			$("#modalTitleId").text("Müşteri Düzenle");
+			$("#modal").modal('show');
+			$("#txtName").val(customerName);
+			$("#btnSave").off().click(function () {
+				$.ajax({
+					type: 'POST',
+					url: 'Customer/Update',
+					data: {
+						id: customerId,
+						name: $("#txtName").val()
+					},
+					success: function (res) {
+						$("#modal").modal('hide');
+						toastr.success("İşlem Başarılı");
+						DataTable.ajax.reload();
+					}
+
+				})
+			})
+
+
+		}
 
 		function fillDataTable() {
 			DataTable = $('#tblCustomers').DataTable({
@@ -100,11 +121,15 @@
 				columns: [
 					{ data: 'id', title: "Id", width: '400px' },
 					{ data: 'name', title: "Ad" },
-					{data:'totalUsers', title:"Kullanıcı Sayısı"},
 					{
-						data: 'id', title: 'İşlemler', render: function (data) {
+						data: 'totalUsers', title: "Kullanıcı Sayısı", render: function (data, type, row) {
+							return `<a href="/User?customerId=${row.id}" class="btn btn-sm btn-success">${row.totalUsers}</a>`
+						}
+					},
+					{
+						data: 'id', title: 'İşlemler', render: function (data, type, row) {
 							return ` <a href="#" onclick="deleteCustomer('${data}')" class="btn btn-sm btn-danger">Sil</a>
-														<a href="#" onclick="editCustomer('${data}')" class="btn btn-sm btn-primary">Düzenle</a> `
+														<a href="#" onclick="updateCustomer('${data}','${row.name}')" class="btn btn-sm btn-primary">Düzenle</a> `
 						}
 					}
 				]
