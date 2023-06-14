@@ -8,6 +8,11 @@ namespace ReceteX.Utility
 {
 	public class XmlRetriever
 	{
+		public static Task<string> GetXmlContent(string v)
+		{
+			throw new NotImplementedException();
+		}
+
 		public async Task<string> GetXmlContect(string url)
 		{
 			using (var client = new HttpClient())
