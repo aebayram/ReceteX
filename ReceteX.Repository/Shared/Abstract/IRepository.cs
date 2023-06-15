@@ -19,9 +19,10 @@ namespace ReceteX.Repository.Shared.Abstract
 
         //bu dışarıdan filtreleyebileceğim getall
 
+        IQueryable<T> GetAllDeleted();
+        IQueryable<T> GetAllDeleted(Expression<Func<T, bool>> filter);
 
         T GetById(Guid id);
-
         void Add(T entity);
         void Update(T entity);
         void Remove(Guid id);
