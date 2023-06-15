@@ -71,9 +71,6 @@ namespace ReceteX.Web.Controllers
 			appUser.DateCreated = asil.DateCreated;
 
 
-
-
-
 			unitOfWork.Users.Update(appUser);
 			unitOfWork.Save();
 			return Ok();
