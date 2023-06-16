@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ReceteX.Data;
 using ReceteX.Models;
 using ReceteX.Repository.Shared.Abstract;
 using ReceteX.Utility;
@@ -14,8 +15,8 @@ namespace ReceteX.Web.Controllers
 
         public MedicineController(IUnitOfWork unitOfWork, XmlRetriever xmlRetriever)
         {
-            this.unitOfWork=unitOfWork;
-            this.xmlRetriever=xmlRetriever;
+            this.unitOfWork = unitOfWork;
+            this.xmlRetriever = xmlRetriever;
         }
 
         public async Task ParseAndSaveFromXml(string xmlContent)
@@ -23,12 +24,13 @@ namespace ReceteX.Web.Controllers
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(xmlContent);
             XmlNodeList medicinesFromXml = xmlDoc.SelectNodes("/ilaclar/ilac");
-            //database deki tüm aktif nesneler
+            //datatabse'deki tüm aktif nesneler
             IQueryable<Medicine> medicinesFromDb = unitOfWork.Medicines.GetAll().AsNoTracking().OrderBy(m => m.Name).ToList().AsQueryable<Medicine>();
-            //database deki tüm pasif nesneler
-            IQueryable<Medicine> medicinesFromDbDeleted = unitOfWork.Medicines.GetAllDeleted().AsNoTracking().OrderBy(m => m.Name).ToList().AsQueryable<Medicine>();
 
-            //Yeni kayıtları aktaran döngümüz
+            //database'deki tüm silinmiş nesneler
+            IQueryable<Medicine> deletedMedicinesFromDb = unitOfWork.Medicines.GetAllDeleted().AsNoTracking().OrderBy(m => m.Name).ToList().AsQueryable<Medicine>();
+
+            //Yeni kayıtları aktaran döngümüz.
             foreach (XmlNode medicine in medicinesFromXml)
             {
                 string barcodeFromXml = medicine.SelectSingleNode("barkod").InnerText;
@@ -42,8 +44,7 @@ namespace ReceteX.Web.Controllers
                 }
                 else
                 {
-                    Medicine medSilinmis = medicinesFromDbDeleted.FirstOrDefault(m => m.Barcode == barcodeFromXml);
-
+                    Medicine medSilinmis = deletedMedicinesFromDb.FirstOrDefault(m => m.Barcode == barcodeFromXml);
                     if (medSilinmis != null)
                     {
                         medSilinmis.isDeleted = false;
@@ -51,34 +52,41 @@ namespace ReceteX.Web.Controllers
                     }
                 }
             }
+
             unitOfWork.Save();
 
-            //Kayanktan silinmiş olan ilaçları databasede isDelete=true yapan döngümüz
-            IEnumerable<XmlNode> medicinesFromXmlEnumerable = xmlDoc.SelectNodes("/ilaclar/ilac").Cast<XmlNode>();
+            //Kaynaktan silinmiş olan ilaçları databasede isdelete=true yapan döngümüz
+            IEnumerable<XmlNode> medicinesFromXmlEnumarable = xmlDoc.SelectNodes("/ilaclar/ilac").Cast<XmlNode>();
+
             foreach (Medicine ilac in medicinesFromDb)
             {
-                if (!medicinesFromXmlEnumerable.Any(x => x.SelectSingleNode("barkod").InnerText==ilac.Barcode))
+                if (!medicinesFromXmlEnumarable.Any(x => x.SelectSingleNode("barkod").InnerText==ilac.Barcode))
                 {
                     ilac.isDeleted = true;
                     unitOfWork.Medicines.Update(ilac);
                 }
+
             }
 
+
             unitOfWork.Save();
+
         }
+
         public async Task<IActionResult> UpdateMedicinesList()
         {
             string content = await xmlRetriever.GetXmlContect("https://www.ibys.com.tr/exe/ilaclar.xml");
             await ParseAndSaveFromXml(content);
-            return RedirectToAction("Index");
 
+
+
+            return RedirectToAction("Index");
         }
+
 
         public IActionResult Index()
         {
             return View();
         }
-
-
     }
 }

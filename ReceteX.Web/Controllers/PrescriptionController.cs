@@ -26,19 +26,17 @@ namespace ReceteX.Web.Controllers
             unitOfWork.Prescriptions.Add(prescription);
             unitOfWork.Save();
             return View(prescription);
-
-
         }
 
 
-        [HttpPost]
-        public IActionResult Create(Prescription prescription)
-        {
-            unitOfWork.Prescriptions.Add(prescription);
-            unitOfWork.Save();
+        //[HttpPost]
+        //public IActionResult Add(Prescription prescription)
+        //{
+        //    unitOfWork.Prescriptions.Add(prescription);
+        //    unitOfWork.Save();
 
-            return Json(prescription);
-        }
+        //    return Json(prescription);
+        //}
 
         [HttpPost]
         public IActionResult AddDiagnosis(Guid prescriptionId, Guid diagnosisId)

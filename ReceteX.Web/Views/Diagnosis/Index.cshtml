@@ -1,5 +1,14 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿<div>
+	<div class="card">
+		<div class="card-header  text-white bg-success bg-gradient">
+			<span class="fs-4">Tanı Listesi</span>
+
+			<a asp-action="UpdateDiagnosesList" asp-controller="Diagnosis" class="btn btn-warning ms-2">Listeyi Güncelle</a>
+
+		</div>
+		<div class="card-body">
+			<table id="tblDiagnoses" class="table table-bordered table-striped" style="width:100%">
+			</table>
+		</div>
+	</div>
+</div>
