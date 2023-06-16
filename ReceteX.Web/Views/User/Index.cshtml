@@ -1,4 +1,4 @@
-﻿<div>
+﻿﻿<div>
 	<div class="card">
 		<div class="card-header  text-white bg-success bg-gradient">
 			<span class="fs-4">Kullanıcı Listesi</span>
@@ -39,6 +39,10 @@
 						<input type="text" id="txtSurname" class="form-control txt">
 					</div>
 					<div class="mb-3">
+						<label class="form-label">Şifre</label>
+						<input type="password" id="txtPassword" class="form-control txt">
+					</div>
+					<div class="mb-3">
 						<label class="form-label">Müşteri Adı</label>
 						<select id="ddlCustomer" class="form-control select2 txt"></select>
 					</div>
@@ -53,6 +57,25 @@
 					<div class="mb-3">
 						<label class="form-label">Şehir Kodu</label>
 						<input type="text" id="txtCity" class="form-control txt">
+					</div>
+					<div class="mb-3">
+						<label class="form-label">Medula Şifre</label>
+						<input type="password" id="txtMedulaPassword" class="form-control txt">
+					</div>
+					<div class="mb-3">
+						<label class="form-label">Pin Kodu</label>
+						<input type="text" id="txtPinCode" class="form-control txt">
+					</div>
+					<div class="mb-3">
+						<label for="Authorization" class="form-label">Yetki</label><br />
+
+						<div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+							<input type="radio" class="btn-check" name="Authorization" value="True" id="btnradioAdmin1" autocomplete="off" checked>
+							<label class="btn btn-outline-info" for="btnradioAdmin1">Admin</label>
+
+							<input type="radio" class="btn-check" name="Authorization" value="False" id="btnradioAdmin2" autocomplete="off">
+							<label class="btn btn-outline-success" for="btnradioAdmin2">User</label>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -102,11 +125,20 @@
 					$('#txtTckn').val(res.tckn);
 					$('#txtGsm').val(res.gsm);
 					$('#txtCity').val(res.cityCode);
+					$('#txtPassword').val(res.password);
+					$('#txtMedulaPassword').val(res.medulaPassword);
+					$('#txtPinCode').val(res.pinCode);
+					if (res.isAdmin) {
+						$('#btnradioAdmin1').prop('checked', true);
+					}
+					else {
+						$('#btnradioAdmin2').prop('checked', true);
+					}
 					fillDdlCustomer();
 
 					$(document).ajaxStop(function () {
 						$(this).off("ajaxStop");
-						$("#ddlCustomer").val(res.customerId).trigger('change');
+						$("#ddlCustomer").val(res.customerID).trigger('change');
 						$('.select2').select2({ width: '100%', dropdownParent: $('#modal') });
 						$('#modal').modal('show');
 					});
@@ -122,7 +154,12 @@
 					tckn: $('#txtTckn').val(),
 					gsm: $('#txtGsm').val(),
 					cityCode: $('#txtCity').val(),
-					customerId: $('#ddlCustomer option:selected').val(),
+					customerID: $('#ddlCustomer option:selected').val(),
+					medulaPassword: $('#txtMedulaPassword').val(),
+					password: $('#txtPassword').val(),
+					pinCode: $('#txtPinCode').val(),
+					isAdmin: $("input[name='Authorization']:checked").val(),
+					isActive: $("input[name='Active']:checked").val()
 				}
 
 				$.ajax({
@@ -184,16 +221,61 @@
 					{ data: 'name', title: "Ad" },
 					{ data: 'surname', title: "Soyad" },
 					{ data: 'customer.name', title: "Müşteri Adı" },
-					{ data: 'cityCode', title: 'Şehir Kodu' },
 					{ data: 'gsm', title: "Telefon" },
 					{ data: 'tckn', title: "TCKN" },
+					{ data: 'cityCode', title: 'Şehir Kodu' },
 					{
-						data: 'id', title: 'İşlemler', render: function (data) {
-							return ` <a href="#" onclick="deleteUser('${data}')" class="btn btn-sm btn-danger">Sil</a>
-													<a href="#" onclick="editUser('${data}')" class="btn btn-sm btn-primary">Düzenle</a> `
+						data: 'isActive', className: "text-center", title: 'Durum', render: function (data, type, row)
+						//{return data = (data) ? 'Aktif' : 'Pasif';}
+						{
+							if (data) {
+								return `<a class="btn btn-sm btn-success px-3" onclick="ChangeStatus('${row.id}')">Aktif</a>`
+							}
+							else
+								return `<a class="btn btn-sm btn-dark px-3" onclick="ChangeStatus('${row.id}')">Pasif</a>`
+						}
+					},
+					{
+						data: 'id', className: "text-center", title: 'İşlemler', render: function (data) {
+							return ` <a href="#" onclick="deleteUser('${data}')" class="btn btn-sm btn-danger"><i class="dripicons-trash"></i></a>
+											<a href="#" onclick="editUser('${data}')" class="btn btn-sm btn-primary"><i class="dripicons-document-edit"></i></a> `
 						}
 					}
 				]
+			});
+		}
+		function ChangeStatus(userId) {
+			Swal.fire({
+				title: 'Kullancının Durumunu Değiştirmek İstediğinize Emin Misiniz?',
+				text: "Kullanıcı durumu değişecek",
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Değiştir!'
+			}).then((result) => {
+				if (result.isConfirmed) {
+					$.ajax({
+						type: 'POST',
+						url: '/User/ChangeStatus',
+						data: { id: userId },
+						success: function () {
+							Swal.fire(
+								'Başarılı!',
+								'Durum Değişti',
+								'success'
+							);
+							DataTable.ajax.reload();
+						},
+						error: function () {
+							Swal.fire({
+								icon: 'error',
+								title: 'Durum DEğiştirme İşlemi Başarısız!',
+								text: 'Bir şeyler yanlış gitti!'
+							});
+						}
+					});
+				}
 			});
 		}
 
@@ -204,7 +286,13 @@
 				surname: $('#txtSurname').val(),
 				customerId: $('#ddlCustomer option:selected').val(),
 				gsm: $('#txtGsm').val(),
-				tckn: $('#txtTckn').val()
+				tckn: $('#txtTckn').val(),
+				medulaPassword: $('#txtMedulaPassword').val(),
+				password: $('#txtPassword').val(),
+				pinCode: $('#txtPinCode').val(),
+				cityCode: $('#txtCity').val(),
+				isAdmin: $("input[name='Authorization']:checked").val(),
+				isActive: $("input[name='Active']:checked").val()
 			}
 
 			$.ajax({
