@@ -55,7 +55,7 @@
                 success: function (res) {
                     $("#divDiagnoses").empty();
                     for (var diagnose of res[0].diagnoses)
-                        $("#divDiagnoses").append(`<div>${diagnose.name}</div>`);
+                        $("#divDiagnoses").append(`<div>${diagnose.code} - ${diagnose.name}</div>`);
                 }
             });
         }

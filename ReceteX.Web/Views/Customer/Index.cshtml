@@ -128,8 +128,8 @@
 					},
 					{
 						data: 'id', title: 'İşlemler', render: function (data, type, row) {
-							return ` <a href="#" onclick="deleteCustomer('${data}')" class="btn btn-sm btn-danger">Sil</a>
-														<a href="#" onclick="updateCustomer('${data}','${row.name}')" class="btn btn-sm btn-primary">Düzenle</a> `
+							return ` <a href="#" onclick="deleteCustomer('${data}')" class="btn btn-sm btn-danger"><i class="dripicons-trash"></i></a>
+																<a href="#" onclick="updateCustomer('${data}','${row.name}')" class="btn btn-sm btn-primary"><i class="dripicons-document-edit"></i></a> `
 						}
 					}
 				]

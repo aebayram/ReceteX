@@ -1,67 +1,55 @@
-﻿﻿﻿@using System.Security.Claims;
+﻿﻿@using System.Security.Claims;
 <!doctype html>
 <html lang="en">
-
 <head>
 
 	<meta charset="utf-8" />
-	<title>ReceteX.NET</title>
+	<title>Reçete X</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+	<meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
+	<meta content="Themesbrand" name="author" />
 	<!-- App favicon -->
 	<link rel="shortcut icon" href="~/assets/images/favicon.ico">
 
 	<!-- Bootstrap Css -->
 	<link href="~/assets/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css" />
-	<!-- Icons Css -->
+	<!-- Icons C~/ss -->
 	<link href="~/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
-	<!-- App Css-->
+	<!-- App Css~/-->
 	<link href="~/assets/css/app.min.css" id="app-style" rel="stylesheet" type="text/css" />
-
-	<!-- DataTables -->
 	<link href="~/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
 	<link href="~/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" />
-	<!-- plugin css -->
 	<link href="~/assets/libs/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
-	<!-- Sweet Alert-->
+	<!-- Option 1: Include in HTML -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+	<!-- SweetAlert Css -->
 	<link href="~/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
-	<!-- toastr plugin -->
 	<link rel="stylesheet" type="text/css" href="~/assets/libs/toastr/build/toastr.min.css">
-
-	<!-- Bootstrap Trash icon -->
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-
 	@await RenderSectionAsync("Styles",false);
 </head>
 
 
 <body>
-
-	<!-- <body data-layout="horizontal" data-topbar="colored"> -->
-	<!-- Begin page -->
 	<div id="layout-wrapper">
-
-
 		<header id="page-topbar">
 			<div class="navbar-header">
 				<div class="d-flex">
 					<!-- LOGO -->
 					<div class="navbar-brand-box">
-						<a href="index.html" class="logo logo-dark">
+						<a asp-controller="Home" asp-action="Index" class="logo logo-dark">
 							<span class="logo-sm">
-								<img src="~/assets/images/logo-sm.png" alt="" height="22">
+								<img src="~/assets/images/logo-recetex.png" alt="" height="50">
 							</span>
 							<span class="logo-lg">
-								<img src="~/assets/images/logo-dark.png" alt="" height="20">
+								<img src="~/assets/images/logo-recetex.png" alt="" height="50">
 							</span>
 						</a>
-
-						<a href="index.html" class="logo logo-light">
+						<a asp-controller="Home" asp-action="Index" class="logo logo-light">
 							<span class="logo-sm">
-								<img src="~/assets/images/logo-sm.png" alt="" height="22">
+								<img src="~/assets/images/logo-recetex.png" alt="" height="50">
 							</span>
 							<span class="logo-lg">
-								<img src="~/assets/images/logo-light.png" alt="" height="20">
+								<img src="~/assets/images/logo-recetex.png" alt="" height="50">
 							</span>
 						</a>
 					</div>
@@ -102,15 +90,11 @@
 						</div>
 					</div>
 
-
-
 					<div class="dropdown d-none d-lg-inline-block ms-1">
 						<button type="button" class="btn header-item noti-icon waves-effect" data-bs-toggle="fullscreen">
 							<i class="uil-minus-path"></i>
 						</button>
 					</div>
-
-
 
 					<div class="dropdown d-inline-block">
 						<button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
@@ -121,37 +105,31 @@
 							<i class="uil-angle-down d-none d-xl-inline-block font-size-15"></i>
 						</button>
 						<div class="dropdown-menu dropdown-menu-end">
-							<!-- item-->
-
 							<a class="dropdown-item" asp-controller="User" asp-action="Logout"><i class="uil uil-sign-out-alt font-size-18 align-middle me-1 text-muted"></i> <span class="align-middle">Çıkış Yap</span></a>
 						</div>
 					</div>
-
-
-
 				</div>
 			</div>
 		</header>
 		<!-- ========== Left Sidebar Start ========== -->
 		<div class="vertical-menu">
-
 			<!-- LOGO -->
 			<div class="navbar-brand-box">
-				<a href="index.html" class="logo logo-dark">
+				<a asp-controller="Home" asp-action="Index" class="logo logo-dark">
 					<span class="logo-sm">
-						<img src="~/assets/images/logo-sm.png" alt="" height="22">
+						<img src="~/assets/images/logo-recetex.png" alt="" height="50">
 					</span>
 					<span class="logo-lg">
-						<img src="~/assets/images/logo-dark.png" alt="" height="20">
+						<img src="~/assets/images/logo-recetex.png" alt="" height="50">
 					</span>
 				</a>
 
-				<a href="index.html" class="logo logo-light">
+				<a asp-controller="Home" asp-action="Index" class="logo logo-light">
 					<span class="logo-sm">
-						<img src="~/assets/images/logo-sm.png" alt="" height="22">
+						<img src="~/assets/images/logo-recetex.png" alt="" height="50">
 					</span>
 					<span class="logo-lg">
-						<img src="~/assets/images/logo-light.png" alt="" height="20">
+						<img src="~/assets/images/logo-recetex.png" alt="" height="50">
 					</span>
 				</a>
 			</div>
@@ -166,41 +144,33 @@
 				<div id="sidebar-menu">
 					<!-- Left Menu Start -->
 					<ul class="metismenu list-unstyled" id="side-menu">
-						<li class="menu-title">Menu</li>
-
-						<li>
-							<a asp-controller="Home" asp-action="Index">
-								<i class="uil-home-alt"></i><span class="badge rounded-pill bg-primary float-end"></span>
-								<span>Ana Sayfa</span>
-							</a>
-						</li>
-
-						<li>
-							<a asp-controller="Prescription" asp-action="Index">
-								<i class="fas fa-clipboard"></i>
-								<span>Reçete Yaz</span>
-							</a>
-
-						</li>
-
+						<li class="menu-title">Menü</li>
 						@if (User.IsInRole("Admin"))
 						{
 							<li>
 								<a href="javascript: void(0);" class="has-arrow waves-effect">
-									<i class="uil-window-section"></i>
+									<i class="fas fa-users-cog"></i>
 									<span>Yönetsel</span>
 								</a>
-
 								<ul class="sub-menu" aria-expanded="true">
-									<li><a asp-controller="User" asp-action="Index">Kullanıcılar</a></li>
-									<li><a asp-controller="Customer" asp-action="Index">Müşteriler</a></li>
-									<li><a asp-controller="Medicine" asp-action="Index">İlaç Listesi</a></li>
-									<li><a asp-controller="Diagnosis" asp-action="Index">Tanı Listesi</a></li>
+									<li><a asp-action="Index" asp-controller="User"><i class="fas fa-user-cog"></i><span>Kullanıcı Yönetimi</span></a></li>
+									<li><a asp-controller="Customer" asp-action="Index"><i class="fas fa-user-friends"></i>Müşteriler</a></li>
+									<li><a asp-controller="Medicine" asp-action="Index"><i class="fas fa-prescription-bottle-alt"></i>İlaç Listesi</a></li>
+									<li><a asp-controller="Diagnosis" asp-action="Index"><i class="fas fa-notes-medical"></i>Tanı Listesi</a></li>
 								</ul>
-
 							</li>
+
 						}
 
+						<li>
+							<a href="javascript: void(0);" class="has-arrow waves-effect">
+								<i class="fas fa-clinic-medical"></i>
+								<span>ReçeteX</span>
+							</a>
+							<ul class="sub-menu" aria-expanded="true">
+								<li><a href="#"><i class="fas fa-pencil-alt"></i>Reçete Yaz</a></li>
+							</ul>
+						</li>
 					</ul>
 				</div>
 				<!-- Sidebar -->
@@ -214,12 +184,12 @@
 
 			<div class="page-content">
 				<div class="container-fluid">
+
 					@RenderBody()
+
 				</div> <!-- container-fluid -->
 			</div>
 			<!-- End Page-content -->
-
-
 			<footer class="footer">
 				<div class="container-fluid">
 					<div class="row">
@@ -239,9 +209,6 @@
 
 	</div>
 	<!-- END layout-wrapper -->
-	<!-- Right Sidebar -->
-	<!-- /Right-bar -->
-	<!-- Right bar overlay-->
 	<!-- JAVASCRIPT -->
 	<script src="~/assets/libs/jquery/jquery.min.js"></script>
 	<script src="~/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -250,23 +217,34 @@
 	<script src="~/assets/libs/node-waves/waves.min.js"></script>
 	<script src="~/assets/libs/waypoints/lib/jquery.waypoints.min.js"></script>
 	<script src="~/assets/libs/jquery.counterup/jquery.counterup.min.js"></script>
-
-
-	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-	<!-- Required datatable js -->
-	<script src="~/assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
-	<!-- plugins -->
 	<script src="~/assets/libs/select2/js/select2.min.js"></script>
-	<!-- Sweet Alerts js -->
-	<script src="~/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+	<script src="~/assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+	<script src="~/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
 	<!-- toastr plugin -->
 	<script src="~/assets/libs/toastr/build/toastr.min.js"></script>
 
+	<!-- toastr init -->
+	<script src="~/assets/js/pages/toastr.init.js"></script>
+	<script>
+		toastr.options = {
+			"closeButton": true,
+			"progressBar": true,
+			"positionClass": "toast-top-center",
+			"showDuration": "200"
+		}
+	</script>
+	@await RenderSectionAsync("Scripts",false);
+
+	<script src="~/assets/js/pages/dashboard.init.js"></script>
+
+	<!-- Sweet Alerts js -->
+	<script src="~/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+
+	<!-- Sweet alert init js-->
+	<script src="~/assets/js/pages/sweet-alerts.init.js"></script>
+
 	<!-- App js -->
 	<script src="~/assets/js/app.js"></script>
-
-	@await RenderSectionAsync("Scripts",false);
 
 </body>
 
