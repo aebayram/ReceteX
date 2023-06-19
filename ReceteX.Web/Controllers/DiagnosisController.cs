@@ -85,11 +85,16 @@ namespace ReceteX.Web.Controllers
         {
             return View();
         }
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            return Json(new { data = unitOfWork.Diagnoses.GetAll() });
+        }
 
         [HttpGet]
         public JsonResult SearchDiagnosis(string searchTerm)
         {
-            var diagnoses = unitOfWork.Diagnoses.GetAll(d => d.Name.ToLower().Contains(searchTerm.ToLower()) || d.Code.ToLower().Contains(searchTerm.ToLower())).Select(d => new { d.Id, Name=d.Code + " - " +d.Name}).ToList();
+            var diagnoses = unitOfWork.Diagnoses.GetAll(d => d.Name.ToLower().Contains(searchTerm.ToLower()) || d.Code.ToLower().Contains(searchTerm.ToLower())).Select(d => new { d.Id, Name = d.Code + " - " +d.Name }).ToList();
 
             return Json(diagnoses);
         }
