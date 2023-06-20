@@ -21,7 +21,6 @@ namespace ReceteX.Repository.Shared.Abstract
 		IRepository<Prescription> Prescriptions { get; }
 		IRepository<PrescriptionMedicine> PrescriptionMedicines { get; }
 		IRepository<Status> Statuses { get; }
-
 		void Save();
 	}
 }

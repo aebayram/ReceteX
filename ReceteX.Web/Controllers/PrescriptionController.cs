@@ -65,21 +65,18 @@ namespace ReceteX.Web.Controllers
 		}
 
 		[HttpPost]
-		public IActionResult GetDescriptions(Guid prescriptionId)
-		{
-			return Json(unitOfWork.Prescriptions.GetAll(p => p.Id == prescriptionId).Include(p => p.Descriptions).ThenInclude(d => d.DescriptionType).First());
+        public JsonResult GetDescriptions(Guid prescriptionId)
+        {
+            return Json(unitOfWork.Descriptions.GetAll(d => d.PrescriptionId == prescriptionId).Include(d => d.DescriptionType));
+        }
 
-		}
-
-		[HttpPost]
-		public IActionResult AddDescription(Guid prescriptionId, Description description)
-		{
-			Prescription asil = unitOfWork.Prescriptions.GetAll(p => p.Id == prescriptionId).Include(p => p.Descriptions).First();
-			asil.Descriptions.Add(description);
-			unitOfWork.Prescriptions.Update(asil);
-			unitOfWork.Save();
-			return Ok();
-		}
+           [HttpPost]
+        public IActionResult AddDescription(Description description)
+        {
+            unitOfWork.Descriptions.Add(description);
+            unitOfWork.Save();
+            return Ok();
+        }
 
 		[HttpPost]
 		public IActionResult AddMedicine(Guid prescriptionId, PrescriptionMedicine prescriptionMedicine)
@@ -106,19 +103,19 @@ namespace ReceteX.Web.Controllers
 
 		}
 
-		[HttpPost]
-		public IActionResult RemoveDescription(Guid prescriptionId, Guid descriptionId)
-		{
-			Prescription asil = unitOfWork.Prescriptions.GetAll(p => p.Id == prescriptionId).Include(p => p.Descriptions).First();
-			asil.Descriptions.Remove(asil.Descriptions.FirstOrDefault(d => d.Id == descriptionId));
+        [HttpPost]
+        public IActionResult RemoveDescription(Guid descriptionId)
+        {
 
-			unitOfWork.Prescriptions.Update(asil);
-			unitOfWork.Save();
-			return Ok();
+            unitOfWork.Descriptions.Remove(descriptionId);
 
-		}
 
-		[HttpPost]
+            unitOfWork.Save();
+            return Ok();
+
+        }
+
+        [HttpPost]
 		public IActionResult RemoveDiagnosis(Guid prescriptionId, Guid diagnosisId)
 		{
 			Prescription asil = unitOfWork.Prescriptions.GetAll(p => p.Id == prescriptionId).Include(p => p.Diagnoses).First();

@@ -156,7 +156,7 @@
                         </select>
                     </td>
                     <td>
-                        <input type="text" id="txtAciklama" placeholder="Açıklama eklemek için önce tür seçin" readonly class="form-control">
+                        <input type="text" id="txtDescription" placeholder="Açıklama eklemek için önce tür seçin" readonly class="form-control">
                     </td>
                     <td><input type="button" onclick="addDescription()" id="btnAddDescription" class="btn btn-success d-none" value="Ekle"></td>
                 </tr>
@@ -346,7 +346,7 @@
                     console.log(res);
                     $("#ddlDescriptionTypes").val(0).trigger('change'); // yeni bir description eklendikten sonra selectin value'sini 0 yap
                     $("#tblDescription").empty();
-                    for (var description of res.descriptions) {
+                    for (var description of res) {
                         $("#tblDescription").append(`
                                  <tr>
                                      <td>${description.descriptionType.name}</td>
@@ -361,24 +361,24 @@
 
         function addDescription() {
             let prescriptionId = '@Model.Id';
-            let descriptionText = $("#txtAciklama").val();
+            let descriptionText = $("#txtDescription").val();
             let descriptionId = $("#ddlDescriptionTypes").val().split('|')[1];
 
             let description = {
+                text: descriptionText,
                 descriptionTypeId: descriptionId,
-                text: descriptionText
+                prescriptionId: prescriptionId
             }
 
             $.ajax({
                 type: 'Post',
                 url: '@Url.Action("AddDescription","Prescription")',
-                data: {
-                    prescriptionId: prescriptionId,
+                data:{
                     description: description
                 },
                 success: function (res) {
                     fillPrescriptionDescriptions();
-                    $('#txtAciklama').val('');
+                    $('#txtDescription').val('');
                     $('#btnAddDescription').addClass('d-none');
                 }
             })
@@ -480,21 +480,21 @@
             //Açıklama kısmı buton gösterme ve textbox readonly
             $('#ddlDescriptionTypes').on('change', function () {
                 if ($('#ddlDescriptionTypes').val() != '0') {
-                    $('#txtAciklama').prop('readonly', false);
-                    $('#txtAciklama').prop('placeholder', 'Açıklama Girin');
+                    $('#txtDescription').prop('readonly', false);
+                    $('#txtDescription').prop('placeholder', 'Açıklama Girin');
                 }
                 else {
-                    $('#txtAciklama').prop('readonly', true).val('');
-                    $('#txtAciklama').prop('placeholder', 'Açıklama eklemek için önce tür seçin');
+                    $('#txtDescription').prop('readonly', true).val('');
+                    $('#txtDescription').prop('placeholder', 'Açıklama eklemek için önce tür seçin');
                 }
             })
 
-            $('#txtAciklama').on('keyup', function () {
-                let uzunluk = $('#txtAciklama').val();
+            $('#txtDescription').on('keyup', function () {
+                let uzunluk = $('#txtDescription').val();
                 if (uzunluk.length > 2 && $('ddlDescriptionTypes').val() != 0) {
                     $('#btnAddDescription').removeClass('d-none').stop().animate({ opacity: 1 }, 500);
                 }
-                else // txtAciklama uzunluğu 2 nin altındaysa buton kapansın
+                else // txtDescription uzunluğu 2 nin altındaysa buton kapansın
                     $('#btnAddDescription').addClass('d-none').stop().animate({ opacity: 1 }, 500);
             })
 

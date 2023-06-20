@@ -24,13 +24,11 @@ namespace ReceteX.Repository.Shared.Concrete
 		public IRepository<Diagnosis> Diagnoses { get; private set; }
 
 		public IRepository<Medicine> Medicines { get; private set; }
-
 		public IRepository<MedicineUsagePeriod> MedicineUsagePeriods { get; private set; }
 
 		public IRepository<MedicineUsageType> MedicineUsageTypes { get; private set; }
 
 		public IRepository<Prescription> Prescriptions { get; private set; }
-
 		public IRepository<PrescriptionMedicine> PrescriptionMedicines { get; private set; }
 
 		public IRepository<Status> Statuses { get; private set; }

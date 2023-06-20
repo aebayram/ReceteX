@@ -13,5 +13,7 @@ namespace ReceteX.Models
 		//birden fazla açıklaması olabilir o yüzden description type oluşturduk
 		public Guid DescriptionTypeId { get; set; }
 		public virtual DescriptionType? DescriptionType { get; set; }
-	}
+        public Guid PrescriptionId { get; set; }
+        public virtual Prescription Prescription { get; set; }
+    }
 }
