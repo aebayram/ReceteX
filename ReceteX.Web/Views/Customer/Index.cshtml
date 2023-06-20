@@ -1,4 +1,4 @@
-﻿﻿<div>
+﻿<div>
 	<div class="card">
 		<div class="card-header  text-white bg-success bg-gradient">
 			<span class="fs-4">Müşteri Listesi</span>
@@ -28,7 +28,7 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
-				<a href="#" id="btnSave" class="btn btn-primary">Kaydet</a>
+				<a href="#" id="btnSave" class="btn btn-primary">Ekle</a>
 			</div>
 		</div>
 	</div>
@@ -44,15 +44,14 @@
 			$("#btnEkle").click(function () {
 				$('#modal').modal("show");
 				$('#txtName').val("");
+				$('#modalTitleId').text('Müşteri Ekle');
+				$("#btnSave").text("Kaydet").removeClass('btn-success').addClass('btn-primary');
 				$('#btnSave').off().click(function () {
 					addCustomer();
 				});
-			})
-
-
-
+			});
 		});
-		// ---------------------------------------- Müşteri Silem Fonksiyonu BAŞLANGIÇ
+
 		function deleteCustomer(id) {
 			Swal.fire({
 				title: 'Silmek istediğinize emin misiniz?',
@@ -88,48 +87,17 @@
 			});
 		}
 
-		// ------------------------------------ Müşteri  Silme Fonksiyonu BİTİŞ
-
-
-		function updateCustomer(customerId, customerName) {
-			$("#modalTitleId").text("Müşteri Düzenle");
-			$("#modal").modal('show');
-			$("#txtName").val(customerName);
-			$("#btnSave").off().click(function () {
-				$.ajax({
-					type: 'POST',
-					url: 'Customer/Update',
-					data: {
-						id: customerId,
-						name: $("#txtName").val()
-					},
-					success: function (res) {
-						$("#modal").modal('hide');
-						toastr.success("İşlem Başarılı");
-						DataTable.ajax.reload();
-					}
-
-				})
-			})
-
-
-		}
-
 		function fillDataTable() {
 			DataTable = $('#tblCustomers').DataTable({
 				ajax: '/Customer/GetAll',
 				columns: [
 					{ data: 'id', title: "Id", width: '400px' },
 					{ data: 'name', title: "Ad" },
+					{ data: 'totalUsers', className: "text-center", title: "Aktif Kullanıcı Sayısı", width: "200px", render: function (data, type, row) { return `<a href="User?customerId=${row.id}" class="btn btn-sm btn-dark px-5 text-center">${data}</a>` } },
 					{
-						data: 'totalUsers', title: "Kullanıcı Sayısı", render: function (data, type, row) {
-							return `<a href="/User?customerId=${row.id}" class="btn btn-sm btn-success">${row.totalUsers}</a>`
-						}
-					},
-					{
-						data: 'id', title: 'İşlemler', render: function (data, type, row) {
-							return ` <a href="#" onclick="deleteCustomer('${data}')" class="btn btn-sm btn-danger"><i class="dripicons-trash"></i></a>
-																<a href="#" onclick="updateCustomer('${data}','${row.name}')" class="btn btn-sm btn-primary"><i class="dripicons-document-edit"></i></a> `
+						data: 'id', title: 'İşlemler', width: '150px', className: "text-center", render: function (data, type, row) {
+							return ` <a href="#" onclick="deleteCustomer('${data}')" class="btn btn-sm btn-danger px-3"><i class="dripicons-trash"></i></a>
+											<a href="#" onclick="editCustomer('${data}','${row.name}')" class="btn btn-sm btn-primary px-3"><i class="dripicons-document-edit"></i></a> `
 						}
 					}
 				]
@@ -144,13 +112,39 @@
 				success: function (res) {
 					$('#txtName').val("");
 					toastr.success("Müşteri Başarıyla Eklendi.");
-					$('#modal').modal('hide')
+					$('#modal').modal('hide');
 					DataTable.ajax.reload();
 				},
 				error: function () {
 					toastr.error("Müşteri Eklenirken Hata Oluştu!!");
 				}
 			})
+		}
+
+		function editCustomer(id, customerName) {
+			$('#modalTitleId').text('Müşteri Düzenle');
+			$("#btnSave").text("Güncelle").removeClass('btn-primary').addClass('btn-success');
+			$('#txtName').val(customerName);
+			$('#modal').modal('show');
+
+
+			$('#btnSave').off().click(function () {
+				$.ajax({
+					type: 'POST',
+					url: '/Customer/Update',
+					data: { id: id, name: $("#txtName").val() },
+					success: function (res) {
+						toastr.success("Müşteri bilgileri başarıyla güncellendi.");
+						$("#modal").modal("hide");
+						DataTable.ajax.reload();
+					},
+					error: function () {
+						toastr.error("Müşteri bilgileri güncellenirken hata oluştu!!");
+						$("#modal").modal("hide");
+					}
+				});
+			})
+
 		}
 
 	</script>

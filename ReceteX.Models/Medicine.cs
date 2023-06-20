@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace ReceteX.Models
 {
-    public class Medicine:BaseModel
-    {
+	public class Medicine : BaseModel
+	{
 
-        public string? Barcode{ get; set; }
-    
-        
-    }
+		public string? Barcode { get; set; }
+
+
+	}
 }

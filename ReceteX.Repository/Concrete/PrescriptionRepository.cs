@@ -12,16 +12,16 @@ using System.Threading.Tasks;
 
 namespace ReceteX.Repository.Concrete
 {
-    public class PrescriptionRepository : Repository<Prescription>, IPrescriptionRepository
-    {
-        private readonly ApplicationDbContext _db;
-        public PrescriptionRepository(ApplicationDbContext db) : base(db)
-        {
-            _db = db;
-        }
-        public override Prescription GetFirstOrDefault(Expression<Func<Prescription, bool>> filter)
-        {
-            return _db.Prescriptions.Include(p => p.Diagnoses).Include(p => p.PrescriptionMedicines).Include(p => p.Descriptions).FirstOrDefault(filter);
-        }
-    }
+	public class PrescriptionRepository : Repository<Prescription>, IPrescriptionRepository
+	{
+		private readonly ApplicationDbContext _db;
+		public PrescriptionRepository(ApplicationDbContext db) : base(db)
+		{
+			_db = db;
+		}
+		public override Prescription GetFirstOrDefault(Expression<Func<Prescription, bool>> filter)
+		{
+			return _db.Prescriptions.Include(p => p.Diagnoses).Include(p => p.PrescriptionMedicines).Include(p => p.Descriptions).FirstOrDefault(filter);
+		}
+	}
 }

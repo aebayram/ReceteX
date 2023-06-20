@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace ReceteX.Repository.Abstract
 {
-    public interface ICustomerRepository : IRepository<Customer>
-    {
-        IQueryable GetAllWithUserCount();
-    }
+	public interface ICustomerRepository : IRepository<Customer>
+	{
+		IQueryable GetAllWithUserCount();
+	}
 }

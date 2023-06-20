@@ -1,4 +1,4 @@
-﻿﻿@using System.Security.Claims;
+﻿@using System.Security.Claims;
 <!doctype html>
 <html lang="en">
 <head>
@@ -9,7 +9,7 @@
 	<meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
 	<meta content="Themesbrand" name="author" />
 	<!-- App favicon -->
-	<link rel="shortcut icon" href="~/assets/images/favicon.ico">
+	<link rel="shortcut icon" href="~/assets/images/recetex-sm.png">
 
 
 
@@ -24,7 +24,6 @@
 	<link href="~/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" />
 	<link href="~/assets/libs/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
 	<!-- Option 1: Include in HTML -->
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
 	<!-- SweetAlert Css -->
 	<link href="~/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
 	<link rel="stylesheet" type="text/css" href="~/assets/libs/toastr/build/toastr.min.css">
@@ -43,7 +42,7 @@
 					<div class="navbar-brand-box">
 						<a asp-controller="Home" asp-action="Index" class="logo logo-dark">
 							<span class="logo-sm">
-								<img src="~/assets/images/logo-recetex.png" alt="" height="50">
+								<img src="~/assets/images/recetex-sm.png" alt="" height="50">
 							</span>
 							<span class="logo-lg">
 								<img src="~/assets/images/logo-recetex.png" alt="" height="50">
@@ -51,7 +50,7 @@
 						</a>
 						<a asp-controller="Home" asp-action="Index" class="logo logo-light">
 							<span class="logo-sm">
-								<img src="~/assets/images/logo-recetex.png" alt="" height="50">
+								<img src="~/assets/images/recetex-sm.png" alt="" height="50">
 							</span>
 							<span class="logo-lg">
 								<img src="~/assets/images/logo-recetex.png" alt="" height="50">
@@ -122,7 +121,7 @@
 			<div class="navbar-brand-box">
 				<a asp-controller="Home" asp-action="Index" class="logo logo-dark">
 					<span class="logo-sm">
-						<img src="~/assets/images/logo-recetex.png" alt="" height="50">
+						<img src="~/assets/images/recetex-sm.png" alt="" height="50">
 					</span>
 					<span class="logo-lg">
 						<img src="~/assets/images/logo-recetex.png" alt="" height="50">
@@ -131,7 +130,7 @@
 
 				<a asp-controller="Home" asp-action="Index" class="logo logo-light">
 					<span class="logo-sm">
-						<img src="~/assets/images/logo-recetex.png" alt="" height="50">
+						<img src="~/assets/images/recetex-sm.png" alt="" height="50">
 					</span>
 					<span class="logo-lg">
 						<img src="~/assets/images/logo-recetex.png" alt="" height="50">
@@ -224,17 +223,12 @@
 	<script src="~/assets/libs/select2/js/select2.min.js"></script>
 	<script src="~/assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
 	<script src="~/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
-	<!-- toastr plugin -->
+
+
+	<!-- PLUGINS  -->
 	<script src="~/assets/libs/toastr/build/toastr.min.js"></script>
-	@*Bootstrap-touchspin*@
 	<script src="~/assets/libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.js"></script>
-
-
-
-
-
-
-	<!-- toastr init -->
+	<script src="~/assets/js/pages/toastr.init.js"></script>
 	<script>
 		toastr.options = {
 			"closeButton": true,
@@ -243,15 +237,17 @@
 			"showDuration": "200"
 		}
 	</script>
-	@await RenderSectionAsync("Scripts",false);
-
-
-
-	<!-- Sweet Alerts js -->
 	<script src="~/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+	<script src="~/assets/js/pages/sweet-alerts.init.js"></script>
+
+
+	<!-- apexcharts -->
+	<script src="~/assets/libs/apexcharts/apexcharts.min.js"></script>
+	<script src="~/assets/js/pages/dashboard.init.js"></script>
 
 	<!-- App js -->
 	<script src="~/assets/js/app.js"></script>
+	@await RenderSectionAsync("Scripts",false);
 
 
 </body>

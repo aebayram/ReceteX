@@ -4,58 +4,59 @@ using ReceteX.Repository.Shared.Abstract;
 
 namespace ReceteX.Web.Controllers
 {
-    public class CustomerController : Controller
-    {
-        private readonly IUnitOfWork unitOfWork;
+	public class CustomerController : Controller
+	{
+		private readonly IUnitOfWork unitOfWork;
 
-        public CustomerController(IUnitOfWork unitOfWork)
-        {
-            this.unitOfWork = unitOfWork;
-        }
+		public CustomerController(IUnitOfWork unitOfWork)
+		{
+			this.unitOfWork = unitOfWork;
+		}
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+		public IActionResult Index()
+		{
+			return View();
+		}
 
-        public IActionResult GetAll()
-        {
-            return Json(new { data = unitOfWork.Customers.GetAllWithUserCount() });
-        }
+		[HttpPost]
+		public IActionResult Create(Customer customer)
+		{
+			if (customer.Name != null)
+			{
+				unitOfWork.Customers.Add(customer);
+				unitOfWork.Save();
+				return Ok();
+			}
+			else
+				return BadRequest();
+		}
 
-        [HttpPost]
-        public IActionResult Delete(Guid id)
-        {
+		public IActionResult GetAll()
+		{
+			return Json(new { data = unitOfWork.Customers.GetAllWithUserCount() });
+		}
 
-            unitOfWork.Customers.Remove(id);
-            unitOfWork.Save();
-            return Ok();
+		public IActionResult GetById(Guid id)
+		{
+			return Json(unitOfWork.Customers.GetById(id));
+		}
 
-        }
-        [HttpPost]
-        public IActionResult Create(Customer customer)
-        {
-            unitOfWork.Customers.Add(customer);
-            unitOfWork.Save();
+		[HttpPost]
+		public IActionResult Update(Customer cust)
+		{
+			Customer asil = unitOfWork.Customers.GetFirstOrDefault(c => c.Id == cust.Id);
+			asil.Name = cust.Name;
+			unitOfWork.Customers.Update(asil);
+			unitOfWork.Save();
+			return Ok();
+		}
 
-            return Ok();
-        }
-
-        [HttpPost]
-        public IActionResult Update(Customer customer)
-        {
-            Customer asil = unitOfWork.Customers.GetFirstOrDefault(c => c.Id==customer.Id);
-            asil.Name=customer.Name;
-            unitOfWork.Customers.Update(asil);
-            unitOfWork.Save();
-            return Ok();
-
-        }
-
-        [HttpPost]
-        public IActionResult GetById(Guid id)
-        {
-            return Json(unitOfWork.Customers.GetById(id));
-        }
-    }
+		[HttpPost]
+		public IActionResult Delete(Guid id)
+		{
+			unitOfWork.Customers.Remove(id);
+			unitOfWork.Save();
+			return Ok();
+		}
+	}
 }

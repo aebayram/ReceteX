@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace ReceteX.Models
 {
-    public class MedicineUsageType : BaseModel
-    {
-        public int? RemoteId { get; set; }
-    }
+	public class MedicineUsageType : BaseModel
+	{
+		public int? RemoteId { get; set; }
+	}
 }

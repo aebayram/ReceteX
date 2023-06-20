@@ -7,98 +7,86 @@ using System.Xml;
 
 namespace ReceteX.Web.Controllers
 {
-    public class DiagnosisController : Controller
-    {
-        private readonly IUnitOfWork unitOfWork;
-        private readonly XmlRetriever xmlRetriever;
+	public class DiagnosisController : Controller
+	{
 
-        public DiagnosisController(IUnitOfWork unitOfWork, XmlRetriever xmlRetriever)
-        {
-            this.unitOfWork = unitOfWork;
-            this.xmlRetriever = xmlRetriever;
-        }
-        public async Task ParseAndSaveFromXml(string xmlContent)
-        {
-            XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(xmlContent);
-            XmlNodeList diagnosesFromXml = xmlDoc.SelectNodes("/tanilar/tani");
-            //datatabse'deki tüm aktif nesneler
-            IQueryable<Diagnosis> diagnosesFromDb = unitOfWork.Diagnoses.GetAll().AsNoTracking().OrderBy(m => m.Code).ToList().AsQueryable<Diagnosis>();
+		private readonly IUnitOfWork unitOfWork;
+		private readonly XmlRetriever xmlRetriever;
 
-            //database'deki tüm silinmiş nesneler
-            IQueryable<Diagnosis> deletedDiagnosesFromDb = unitOfWork.Diagnoses.GetAllDeleted().OrderBy(m => m.Code).ToList().AsQueryable<Diagnosis>();
+		public DiagnosisController(IUnitOfWork unitOfWork, XmlRetriever xmlRetriever)
+		{
+			this.unitOfWork = unitOfWork;
+			this.xmlRetriever = xmlRetriever;
+		}
 
-            //Yeni kayıtları aktaran döngümüz.
-            foreach (XmlNode diagnosis in diagnosesFromXml)
-            {
-                string codeFromXml = diagnosis.SelectSingleNode("kod").InnerText;
+		public async Task ParseAndSaveFromXml(string xmlContent)
+		{
+			XmlDocument xmlDoc = new XmlDocument();
+			xmlDoc.LoadXml(xmlContent);
 
-                if (!diagnosesFromDb.Any(m => m.Code == codeFromXml))
-                {
-                    Diagnosis diag = new Diagnosis();
-                    diag.Name = diagnosis.SelectSingleNode("ad").InnerText;
-                    diag.Code = codeFromXml;
-                    unitOfWork.Diagnoses.Add(diag);
-                }
-                else
-                {
-                    Diagnosis medSilinmis = deletedDiagnosesFromDb.FirstOrDefault(m => m.Code == codeFromXml);
-                    if (medSilinmis != null)
-                    {
-                        medSilinmis.isDeleted = false;
-                        unitOfWork.Diagnoses.Update(medSilinmis);
-                    }
-                }
-            }
+			XmlNodeList diagnosesFromXml = xmlDoc.SelectNodes("/tanilar/tani");//ilaclar altındaki her bir ilac boğumu için
+			IQueryable<Diagnosis> diagnosesFromDb = unitOfWork.Diagnoses.GetAll().OrderBy(d => d.Name).ToList().AsQueryable<Diagnosis>();
+			//tanlardan silinmiş nesneleri getirmesi için
+			IQueryable<Diagnosis> deletedDiagnosesFromDb = unitOfWork.Diagnoses.GetAllDeleted().AsNoTracking().OrderBy(d => d.Name).ToList().AsQueryable<Diagnosis>();
 
-            unitOfWork.Save();
+			foreach (XmlNode diagnosis in diagnosesFromXml)
+			{
+				string codeFromXml = diagnosis.SelectSingleNode("kod").InnerText;
+				if (!diagnosesFromDb.Any(m => m.Code == codeFromXml))
+				{
+					Diagnosis diag = new Diagnosis();
+					diag.Name = diagnosis.SelectSingleNode("ad").InnerText;
+					diag.Code = codeFromXml;
+					unitOfWork.Diagnoses.Add(diag);
+				}
+				else
+				{
+					Diagnosis diagSilinmis = deletedDiagnosesFromDb.FirstOrDefault(d => d.Code == codeFromXml);
+					if (diagSilinmis !=  null)
+					{
+						diagSilinmis.isDeleted = false;
+						unitOfWork.Diagnoses.Update(diagSilinmis);
+					}
+				}
+			}
+			unitOfWork.Save();
 
-            //Kaynaktan silinmiş olan ilaçları databasede isdelete=true yapan döngümüz
-            IEnumerable<XmlNode> diagnosesFromXmlEnumarable = xmlDoc.SelectNodes("/tanilar/tani").Cast<XmlNode>();
+			IEnumerable<XmlNode> diagnosesFromXmlEnumerable = xmlDoc.SelectNodes("/tanilar/tani").Cast<XmlNode>();
 
-            foreach (Diagnosis tani in diagnosesFromDb)
-            {
-                if (!diagnosesFromXmlEnumarable.Any(x => x.SelectSingleNode("kod").InnerText == tani.Code))
-                {
-                    tani.isDeleted = true;
-                    unitOfWork.Diagnoses.Update(tani);
-                }
+			foreach (Diagnosis tani in diagnosesFromDb)
+			{
+				if (!diagnosesFromXmlEnumerable.Any(d => d.SelectSingleNode("kod").InnerText == tani.Code))
+				{
+					tani.isDeleted = true;
+					unitOfWork.Diagnoses.Update(tani);
+				}
+			}
+			unitOfWork.Save();
 
-            }
+		}
+		public async Task<IActionResult> UpdateDiagnosesList()
+		{
+			string content = await xmlRetriever.GetXmlContent("https://www.ibys.com.tr/exe/tanilar.xml");
+			await ParseAndSaveFromXml(content);
+			return RedirectToAction("Index");
+		}
 
+		public IActionResult GetAll()
+		{
+			return Json(new { data = unitOfWork.Diagnoses.GetAll() });
+		}
 
-            unitOfWork.Save();
+		[HttpGet]
+		public JsonResult SearchDiagnosis(string searchTerm)
+		{
+			var diagnoses = unitOfWork.Diagnoses.GetAll(d => d.Name.ToLower().Contains(searchTerm.ToLower()) || d.Code.ToLower().Contains(searchTerm.ToLower())).Select(d => new { d.Id, d.Name, d.Code }).ToList();
 
-        }
+			return Json(diagnoses);
+		}
 
-        public async Task<IActionResult> UpdateDiagnosesList()
-        {
-            string content = await xmlRetriever.GetXmlContect("https://www.ibys.com.tr/exe/tanilar.xml");
-            await ParseAndSaveFromXml(content);
-
-
-
-            return RedirectToAction("Index");
-        }
-
-        public IActionResult Index()
-        {
-            return View();
-        }
-        [HttpGet]
-        public IActionResult GetAll()
-        {
-            return Json(new { data = unitOfWork.Diagnoses.GetAll() });
-        }
-
-        [HttpGet]
-        public JsonResult SearchDiagnosis(string searchTerm)
-        {
-            var diagnoses = unitOfWork.Diagnoses.GetAll(d => d.Name.ToLower().Contains(searchTerm.ToLower()) || d.Code.ToLower().Contains(searchTerm.ToLower())).Select(d => new { d.Id, Name = d.Code + " - " +d.Name }).ToList();
-
-            return Json(diagnoses);
-        }
-
-
-    }
+		public IActionResult Index()
+		{
+			return View();
+		}
+	}
 }

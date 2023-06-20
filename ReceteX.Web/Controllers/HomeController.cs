@@ -1,30 +1,21 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-using System.Diagnostics;
-
 namespace ReceteX.Web.Controllers
 {
-    [Authorize]
-    public class HomeController : Controller
-    {
-        //private readonly ILogger<HomeController> _logger;
+	[Authorize]
+	public class HomeController : Controller
+	{
+		public IActionResult Index()
+		{
+			return View();
+		}
 
-        //public HomeController(ILogger<HomeController> logger)
-        //{
-        //    _logger = logger;
-        //}
+		public IActionResult Privacy()
+		{
+			return View();
+		}
 
-        public IActionResult Index()
-        {
-            return View();
-        }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-    
-    }
+	}
 }

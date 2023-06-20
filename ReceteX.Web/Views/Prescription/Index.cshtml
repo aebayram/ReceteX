@@ -1,11 +1,11 @@
-﻿﻿@using ReceteX.Models;
+﻿@using ReceteX.Models;
 @model Prescription
 
 @section Styles{
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
     <style>
         .ui-autocomplete-loading {
-            background: white url("/assets/images/loading.gif") center center no-repeat;
+            background: white url("~/assets/images/loading.gif") center center no-repeat;
         }
 
         .ui-autocomplete .ui-menu-item {
@@ -152,12 +152,13 @@
                 <tr>
                     <td>
                         <select class="form-select" id="ddlDescriptionTypes">
+                            <option value="0">Lütfen Seçiniz.</option>
                         </select>
                     </td>
                     <td>
-                        <input type="text" id="txtAciklama" placeholder="Açıklama eklenecekse boş bırakılamaz" class="form-control">
+                        <input type="text" id="txtAciklama" placeholder="Açıklama eklemek için önce tür seçin" readonly class="form-control">
                     </td>
-                    <td><input type="button" class="btn btn-success" value="Ekle"></td>
+                    <td><input type="button" onclick="addDescription()" id="btnAddDescription" class="btn btn-success d-none" value="Ekle"></td>
                 </tr>
             </tbody>
         </table>
@@ -170,6 +171,8 @@
                     <th>İşlemler</th>
                 </tr>
             </thead>
+            <tbody id="tblDescription">
+            </tbody>
         </table>
     </div>
 </div>
@@ -222,14 +225,14 @@
                     $("#tblMedicines").empty();
                     for (var medicine of res.prescriptionMedicines) {
                         $("#tblMedicines").append(`<tr>
-                                        <td>${medicine.medicine.name}</td>
-                                                <td>${medicine.dose1} X ${medicine.dose2}</td>
-                                                                <td>${medicine.medicineUsagePeriod.name} ${medicine.period} Kez</td>
-                                                <td>${medicine.quantity}</td>
-                                                        <td>${medicine.medicineUsageType.name}</td>
-                                                                <td><a  class="btn btn-danger" onclick="removeMedicine('${medicine.id}')"><i class="dripicons-trash"></i></a></td>
+                                                <td>${medicine.medicine.name}</td>
+                                                        <td>${medicine.dose1} X ${medicine.dose2}</td>
+                                                                        <td>${medicine.medicineUsagePeriod.name} ${medicine.period} Kez</td>
+                                                        <td>${medicine.quantity}</td>
+                                                                <td>${medicine.medicineUsageType.name}</td>
+                                                                        <td><a  class="btn btn-danger" onclick="removeMedicine('${medicine.id}')"><i  class="dripicons-trash"></i></a></td>
 
-                                        </tr>`);
+                                                </tr>`);
                     }
 
                 }
@@ -288,6 +291,7 @@
                 }
             });
         }
+
         function addMedicine() {
             let prescriptionId = '@Model.Id';
             let medicineId = $("#medicineId").val();
@@ -331,6 +335,80 @@
 
             });
 
+        }
+
+        function fillPrescriptionDescriptions() {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetDescriptions", "Prescription")',
+                data: { prescriptionId: '@Model.Id' },
+                success: function (res) {
+                    console.log(res);
+                    $("#ddlDescriptionTypes").val(0).trigger('change'); // yeni bir description eklendikten sonra selectin value'sini 0 yap
+                    $("#tblDescription").empty();
+                    for (var description of res.descriptions) {
+                        $("#tblDescription").append(`
+                                 <tr>
+                                     <td>${description.descriptionType.name}</td>
+                                     <td>${description.text}</td>
+                                             <td><a  class="btn btn-danger" onclick="removeDescription('${description.id}')"><i class="dripicons-trash"></i></a></td>
+                                </tr>`);
+                    }
+
+                }
+            });
+        }
+
+        function addDescription() {
+            let prescriptionId = '@Model.Id';
+            let descriptionText = $("#txtAciklama").val();
+            let descriptionId = $("#ddlDescriptionTypes").val().split('|')[1];
+
+            let description = {
+                descriptionTypeId: descriptionId,
+                text: descriptionText
+            }
+
+            $.ajax({
+                type: 'Post',
+                url: '@Url.Action("AddDescription","Prescription")',
+                data: {
+                    prescriptionId: prescriptionId,
+                    description: description
+                },
+                success: function (res) {
+                    fillPrescriptionDescriptions();
+                    $('#txtAciklama').val('');
+                    $('#btnAddDescription').addClass('d-none');
+                }
+            })
+        }
+
+        function removeDescription(prescriptionDescriptionId) {
+            Swal.fire({
+                title: 'Açıklamaı listeden kaldırmak istediğinizden emin misiniz?',
+                showDenyButton: true,
+                showCancelButton: false,
+                confirmButtonText: 'Evet',
+                denyButtonText: `Hayır`,
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("RemoveDescription","Prescription")',
+                        data: {
+                            prescriptionId: '@Model.Id',
+                            descriptionId: prescriptionDescriptionId
+
+                        },
+                        success: function (res) {
+                            fillPrescriptionDescriptions();
+                        }
+                    })
+
+                }
+            })
         }
 
         function removeMedicine(prescriptionMedicineId) {
@@ -399,9 +477,26 @@
             fillTypes();
             $(".touchspin").TouchSpin({ min: 0, max: 100, step: 1, decimals: 0 });
             $(".input-mask").inputmask();
+            //Açıklama kısmı buton gösterme ve textbox readonly
+            $('#ddlDescriptionTypes').on('change', function () {
+                if ($('#ddlDescriptionTypes').val() != '0') {
+                    $('#txtAciklama').prop('readonly', false);
+                    $('#txtAciklama').prop('placeholder', 'Açıklama Girin');
+                }
+                else {
+                    $('#txtAciklama').prop('readonly', true).val('');
+                    $('#txtAciklama').prop('placeholder', 'Açıklama eklemek için önce tür seçin');
+                }
+            })
 
-
-
+            $('#txtAciklama').on('keyup', function () {
+                let uzunluk = $('#txtAciklama').val();
+                if (uzunluk.length > 2 && $('ddlDescriptionTypes').val() != 0) {
+                    $('#btnAddDescription').removeClass('d-none').stop().animate({ opacity: 1 }, 500);
+                }
+                else // txtAciklama uzunluğu 2 nin altındaysa buton kapansın
+                    $('#btnAddDescription').addClass('d-none').stop().animate({ opacity: 1 }, 500);
+            })
 
             $("#diagnosis").autocomplete({
                 source: function (request, response) {

@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace ReceteX.Models
 {
-    //Tanı
-    public class Diagnosis : BaseModel
-    {
-        //Diagnosis Code
-        public string? Code { get; set; }
+	//Tanı
+	public class Diagnosis : BaseModel
+	{
+		//Diagnosis Code
+		public string? Code { get; set; }
 
-        public ICollection<Prescription> Prescription { get; set; }
+		public ICollection<Prescription> Prescription { get; set; }
 
 
-    }
+	}
 }
