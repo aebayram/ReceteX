@@ -131,20 +131,20 @@ namespace ReceteX.Web.Controllers
             unitOfWork.Save();
             return Ok();
         }
-
         [HttpPost]
-
-        [HttpPost]
-
-        public IActionResult AddPatient(Guid prescriptionId,string patientTCK, string patientGSM)
+        public IActionResult AddPatient(Guid prescriptionId, string patientTCK, string patientGSM)
         {
             Prescription asil = unitOfWork.Prescriptions.GetAll(p => p.Id == prescriptionId).First();
             asil.TCKN = patientTCK;
-            asil.PatientGsm= patientGSM;
+            asil.PatientGsm = patientGSM;
             unitOfWork.Prescriptions.Update(asil);
             unitOfWork.Save();
-            return Ok();    
+            return Ok();
+
+
         }
+
+        [HttpPost]
         public XDocument GenerateXml(Guid prescriptionId)
         {
             Prescription asil = unitOfWork.Prescriptions.GetAll(p => p.Id == prescriptionId).Include(p => p.PrescriptionMedicines).ThenInclude(m => m.Medicine).Include(p => p.PrescriptionMedicines).ThenInclude(u => u.MedicineUsagePeriod).Include(p => p.PrescriptionMedicines).ThenInclude(t => t.MedicineUsageType).Include(p => p.Diagnoses).Include(p => p.AppUser).First();
@@ -174,21 +174,12 @@ namespace ReceteX.Web.Controllers
                         new XElement("dogumTarihi", asil.BirthDate),
                         new XElement("tcKimlikNo", asil.TCKN))
                 );
-            // XML yapısını bir dizeye dönüştür
-            XDeclaration dek = new XDeclaration("1.0", "utf-8", "yes");
 
+            XDeclaration dek = new XDeclaration("1.0", "utf-8", "yes");
 
             XDocument xDoc = new XDocument(dek, ereceteBilgisi);
 
-            //string xmlString = xDoc.ToString();
-            ////  XML dosyasını indirmek için dosya adını belirle            
-            //string fileName = "prescription.xml";
-            //// XML dosyasını oluştur ve indirme bağlantısını döndür
 
-            //if (!Directory.Exists(Directory.GetCurrentDirectory() + "/dosyalar/ImzalanacakRecete/"))
-            //    Directory.CreateDirectory(Directory.GetCurrentDirectory() + "/dosyalar/ImzalanacakRecete/");
-
-            //xDoc.Save(Directory.GetCurrentDirectory()+"/dosyalar/ImzalanacakRecete/"+ fileName);
             string xmlString = $"{xDoc.Declaration}\n{xDoc}";
             asil.XmlToSign = xmlString;
             unitOfWork.Prescriptions.Update(asil);
@@ -202,6 +193,7 @@ namespace ReceteX.Web.Controllers
 
     }
 }
+
 
 //GET: GET isteği, belirtilen bir kaynağın(örneğin bir web sayfası veya bir veri) alınmasını istemek için kullanılır. Bu yöntem, sunucudan veriyi almak için kullanılır ve genellikle bir kaynağın okunması veya görüntülenmesi için kullanılır. GET istekleri genellikle URL üzerinden parametrelerle iletilir ve verilerin sunucudan alınmasını sağlar.
 
