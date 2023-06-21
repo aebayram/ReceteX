@@ -12,7 +12,7 @@ using ReceteX.Data;
 namespace ReceteX.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230621144324_AddXmlFieldToPrescription")]
+    [Migration("20230621170156_AddXmlFieldToPrescription")]
     partial class AddXmlFieldToPrescription
     {
         /// <inheritdoc />
@@ -305,7 +305,7 @@ namespace ReceteX.Data.Migrations
                     b.Property<string>("TCKN")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("XmlSignal")
+                    b.Property<string>("XmlSigned")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("XmlToSign")

@@ -302,7 +302,7 @@ namespace ReceteX.Data.Migrations
                     b.Property<string>("TCKN")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("XmlSignal")
+                    b.Property<string>("XmlSigned")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("XmlToSign")

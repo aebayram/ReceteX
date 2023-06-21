@@ -59,10 +59,9 @@ namespace ReceteX.Models
 
 		//Default doğum tarihi : "01.01.1985"
 		public string? BirthDate { get; set; } = "01.01.1985";
+        public string? XmlToSign { get; set; }
+        public string? XmlSigned { get; set; }
 
-		public string? XmlToSign { get; set; }
-
-		public string? XmlSignal { get; set; }
 
     }
 }
