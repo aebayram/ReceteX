@@ -42,9 +42,9 @@ namespace ReceteX.Models
 
 		//hasta bilgilerini kvkk'dan dolayı kayıt etmeyeceğiz reçetenin içine yazacağız
 
-		public string? PatientFirstName { get; set; }
+		public string? PatientFirstName { get; set; } = "ebru";
 
-		public string? PatientLastName { get; set; }
+		public string? PatientLastName { get; set; } = "bayram";
 
 		//base model'deki doktor için, buradaki hasta için  
 		public string? PatientGsm { get; set; }
@@ -60,5 +60,9 @@ namespace ReceteX.Models
 		//Default doğum tarihi : "01.01.1985"
 		public string? BirthDate { get; set; } = "01.01.1985";
 
-	}
+		public string? XmlToSign { get; set; }
+
+		public string? XmlSignal { get; set; }
+
+    }
 }
